@@ -1,34 +1,50 @@
-# SignToTextSpeech
-
-A machine learning-powered application that translates sign language gestures into both text and speech, bridging communication gaps between the hearing and deaf communities.
+# Sign Language to Speech and Text System
 
 ## Overview
-
-This project uses computer vision and machine learning to recognize sign language gestures and convert them into both spoken words and text in real-time. The system leverages deep learning models, OpenCV, and natural language processing (NLP) to provide an efficient and accessible solution for sign language users.
+This project is a Sign Language to Speech and Text recognition system that uses a webcam to capture hand gestures, classify them using a trained machine learning model, and convert the recognized gestures into text and speech. The system is built using OpenCV for image processing, MediaPipe for hand tracking, and a Random Forest classifier for gesture recognition. The backend is developed using Flask to facilitate interaction with a web-based interface.
 
 ## Features
+- Real-time hand gesture detection and recognition
+- Conversion of sign language to text
+- Text-to-speech conversion using gTTS
+- Web-based interface for user interaction
+- Option to download recognized text as a file or as an audio output
 
-✅ Real-Time Gesture Recognition – Uses a webcam to detect hand signs.
-
-✅ Text Output – Converts recognized gestures into readable text.
-
-✅ Speech Output – Generates spoken words using text-to-speech (TTS) technology.
-
-✅ Offline Functionality – Works without an internet connection after setup.
-
-✅ Scalable & Modular – Designed for future enhancements like AI-powered sentence formation.
+## Technologies Used
+- **Python**
+- **OpenCV**
+- **MediaPipe** 
+- **Random Forest Classifier**
+- **Flask** 
+- **gTTS & pyttsx3** (for text-to-speech conversion)
 
 
-## Technologies Used:
+## Running the System
+1. **Start the Flask Application:**
+   ```python
+   python app.py
+   ```
+2. **Access the Web Interface:**
+   Open a browser and go to `http://127.0.0.1:5000/`. (port number may differ)
 
-Python 🐍
+3. **Using the System:**
+   - Click "Start Camera" to begin capturing gestures.
+   - Perform sign language gestures in front of the webcam.
+   - The recognized gestures will be displayed as text.
+   - Click "Download Text" to save the recognized text.
+   - Click "Download Audio" to get the speech output.
 
-OpenCV 👀 (for image processing)
+## Generating Custom Dataset
+To collect your own dataset, run:
+```python
+python collect_gestures.py
+```
+Follow the on-screen instructions to collect data for each class.
 
-TensorFlow/Keras 🤖 (for deep learning-based gesture recognition)
+## Training a New Model
+Modify `sign_model.py` to preprocess data and train a new Random Forest classifier. Save the trained model as `sign_model.p`.
 
-MediaPipe ✋ (for hand tracking)
 
-NLTK/Text-to-Speech (TTS) 🎙️ (for speech output)
+## License
+This project is open-source and free to use for educational purposes.
 
-Flask 🌐 (for creating a web-based interface)
