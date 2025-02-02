@@ -6,15 +6,26 @@ This project uses computer vision and machine learning to recognize sign languag
 
 Features
 ✅ Real-Time Gesture Recognition – Uses a webcam to detect hand signs.
+
 ✅ Text Output – Converts recognized gestures into readable text.
+
 ✅ Speech Output – Generates spoken words using text-to-speech (TTS) technology.
+
 ✅ Offline Functionality – Works without an internet connection after setup.
+
 ✅ Scalable & Modular – Designed for future enhancements like AI-powered sentence formation.
 
-Technologies Used
+
+Technologies Used:
+
 Python 🐍
+
 OpenCV 👀 (for image processing)
+
 TensorFlow/Keras 🤖 (for deep learning-based gesture recognition)
+
 MediaPipe ✋ (for hand tracking)
+
 NLTK/Text-to-Speech (TTS) 🎙️ (for speech output)
+
 Flask 🌐 (for creating a web-based interface)
