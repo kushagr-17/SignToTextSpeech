@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLATTE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+    </a>
+      <img src="{{ url_for('static', filename='/images/logos.png') }}" width="100" height="rel">
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+    </ul>
+    <button id="signInBtn" type="button" class="btn btn-outline-light me-2">Sign In</button>
+    <button id="signUpBtn" type="button" class="btn btn-light me-2">Sign Up</button>
+    <div id="signInModal" class="modal">
+      <div class="modal-content">
+        <h2>Sign In</h2>
+        <!-- Add your sign-in form here -->
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="signUpModal" class="modal">
+      <div class="modal-content">
+        <h2>Sign Up</h2>
+        <!-- Add your sign-up form here -->
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Title -->
+  <section id="title" class="gradient-background">
+
+    <div class="container col-xxl-8 px-4 ">
+      <div class="row flex-lg-row-reverse align-items-center g-5 pt-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img src="{{ url_for('static', filename='images/sample.jpg')}}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" height="200" loading="lazy">
+        </div>
+        <div class="col-lg-6 text-center">
+          <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">
+            Sign Language to Audio and Text Translation Engine
+          </h1>
+          <div>
+            <button id="start-recording" type="button" class="btn btn-light btn-lg px-4">
+              Start Recording!
+            </button>
+            <button id="stop-recording" type="button" class="btn btn-danger btn-lg px-4 d-none">
+              Stop Recording
+            </button>
+          </div>
+        </div>
+        <div>
+          <h6></h6>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="recording-section" class="d-none">
+    <div class="container text-center mt-5">
+      <div class="row">
+        <div class="col-12">
+          <div id="video-container" class="border">
+            <img id="video-feed" src="/video_feed" alt="Live Video Feed" class="img-fluid">
+          </div>
+        </div>
+        <div class="col-12 mt-4" id="download-options" class="d-none">
+          <button id="download-text" type="button" class="btn btn-primary btn-lg">
+            Download as Text
+          </button>
+          <button id="download-audio" type="button" class="btn btn-secondary btn-lg">
+            Download as Audio
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script>
+    let recordingInterval;
+
+    document.getElementById('start-recording').addEventListener('click', () => {
+
+      fetch('/start_camera', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+      
+            document.getElementById('recording-section').classList.remove('d-none');
+            document.getElementById('start-recording').classList.add('d-none');
+            document.getElementById('stop-recording').classList.remove('d-none');
+            document.getElementById('video-feed').src = '/video_feed'; 
+    
+            recordingInterval = setInterval(() => {
+              fetch('/get_text')
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data.recognized_text);
+                })
+                .catch(err => console.error('Error fetching recognized text:', err));
+            }, 500);
+          } else {
+            alert(data.message); 
+          }
+        });
+    });
+
+    document.getElementById('stop-recording').addEventListener('click', () => {
+      clearInterval(recordingInterval);
+    
+      fetch('/stop_camera', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+    
+            document.getElementById('video-container').classList.add('d-none');
+            document.getElementById('stop-recording').classList.add('d-none');
+            document.getElementById('download-options').classList.remove('d-none');
+          } else {
+            alert('Error stopping camera.');
+          }
+        });
+
+      document.getElementById('download-text').addEventListener('click', () => {
+        window.location.href = '/download_text';
+      });
+
+      document.getElementById('download-audio').addEventListener('click', () => {
+        window.location.href = '/download_audio';
+      });
+    
+    });
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <!-- Testimonial -->
+  <section id="testimonial">
+    <div>
+      <div class="p-5 text-center bg-body-tertiary">
+        <div class="container py-5">
+          <h2 class="text-body-emphasis">Your translator in your pocket.</h2>
+          <img class="profile-img mt-5" src="{{ url_for('static', filename='images/asl.png')}}">
+          <p class="col-lg-8 mx-auto lead mt-2">
+            For your reference
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var signInBtn = document.getElementById("signInBtn");
+    var signUpBtn = document.getElementById("signUpBtn");
+    var signInModal = document.getElementById("signInModal");
+    var signUpModal = document.getElementById("signUpModal");
+
+    signInBtn.onclick = function() {
+      signInModal.style.display = "block";
+    }
+
+    signUpBtn.onclick = function() {
+      signUpModal.style.display = "block";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == signInModal) {
+        signInModal.style.display = "none";
+      } else if (event.target == signUpModal) {
+        signUpModal.style.display = "none";
+      }
+    }
+  </script>
+  <script>
+    const signInForm = document.getElementById("signInForm");
+    const signUpForm = document.getElementById("signUpForm");
+  
+    signInForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      // Perform sign-in logic here
+      console.log("Sign-in form submitted");
+      // Redirect to home page or perform other actions
+    });
+  
+    signUpForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      // Perform sign-up logic here
+      console.log("Sign-up form submitted");
+      // Redirect to home page or perform other actions
+    });
+    </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+</html>
