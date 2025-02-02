@@ -1,10 +1,13 @@
 # SignToTextSpeech
+
 A machine learning-powered application that translates sign language gestures into both text and speech, bridging communication gaps between the hearing and deaf communities.
 
-Overview
+# Overview
+
 This project uses computer vision and machine learning to recognize sign language gestures and convert them into both spoken words and text in real-time. The system leverages deep learning models, OpenCV, and natural language processing (NLP) to provide an efficient and accessible solution for sign language users.
 
-Features
+## Features
+
 ✅ Real-Time Gesture Recognition – Uses a webcam to detect hand signs.
 
 ✅ Text Output – Converts recognized gestures into readable text.
